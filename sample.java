@@ -68,3 +68,53 @@ class Solution {
 }
 // Your code here along with comments explaining your approach
 //Second problem: Russian dolls envelope
+//Time Complexity: nlog(n)
+//Space Complexity: O(n)
+class Solution {
+    public int maxEnvelopes(int[][] envelopes) 
+    {
+        int n = envelopes.length;
+        int[] arr = new int[n];
+        
+        Arrays.sort(envelopes, (a,b)->{
+            if(a[0]==b[0])
+            {
+                return b[1]-a[1];
+            }
+            return a[0]-b[0];
+        });
+        arr[0] = envelopes[0][1];// find the increasing subsequence on heights
+        int len = 1;
+        for(int[] envelope: envelopes)
+        {
+            if(arr[len-1]< envelope[1])
+            {
+                arr[len] = envelope[1];//append
+                len++;
+            }
+            else
+            {
+                int bsIndex = binarySearch(arr, 0, len-1, envelope[1]);
+                arr[bsIndex] = envelope[1];
+            }
+        }
+        return len;
+    }
+    private int binarySearch(int[] nums, int low, int high, int target)
+    {
+            while(low<=high)
+            {
+                int mid= low+ (high-low)/2;
+                if(nums[mid] == target) return mid;
+                if(nums[mid]< target)
+                {
+                    low = mid+1;
+                }
+                if(nums[mid] > target)
+                {
+                    high = mid-1;
+                }
+            }
+            return low;
+    }
+}
